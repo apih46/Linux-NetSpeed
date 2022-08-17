@@ -8,18 +8,18 @@ export PATH
 #	Version: 1.4.0
 #	Author: 千影,cx9208
 #	Blog: https://www.939.me/
-#   推荐使用5.5以上内核直接开启的bbr速度最佳
+#  It is recommended to use a kernel above 5.5 to directly open the bbr for the best speed
 #=================================================
 
 sh_ver="1.4.0"
 github="raw.githubusercontent.com/chiakge/Linux-NetSpeed/master"
 
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Red_background_prefix="\033[41;37m" && Font_color_suffix="\033[0m"
-Info="${Green_font_prefix}[信息]${Font_color_suffix}"
-Error="${Red_font_prefix}[错误]${Font_color_suffix}"
-Tip="${Green_font_prefix}[注意]${Font_color_suffix}"
+Info="${Green_font_prefix}[information]${Font_color_suffix}"
+Error="${Red_font_prefix}[error]${Font_color_suffix}"
+Tip="${Green_font_prefix}[tip]${Font_color_suffix}"
 
-#安装BBR内核
+#Install BBR kernel
 installbbr(){
 	kernel_version="4.11.8"
 	if [[ "${release}" == "centos" ]]; then
@@ -43,16 +43,16 @@ installbbr(){
 	fi
 	detele_kernel
 	BBR_grub
-	echo -e "${Tip} 重启VPS后，请重新运行脚本开启${Red_font_prefix}BBR/BBR魔改版${Font_color_suffix}"
-	stty erase '^H' && read -p "需要重启VPS后，才能开启BBR/BBR魔改版，是否现在重启 ? [Y/n] :" yn
+	echo -e "${Tip}After restarting the VPS, please re-run the script to enable${Red_font_prefix}BBR/BBRMagic revision${Font_color_suffix}"
+	stty erase '^H' && read -p "You need to restart the VPS before you can open the BBR/BBR magic revision. Do you want to restart now? ? [Y/n] :" yn
 	[ -z "${yn}" ] && yn="y"
 	if [[ $yn == [Yy] ]]; then
-		echo -e "${Info} VPS 重启中..."
+		echo -e "${Info} VPS restarting..."
 		reboot
 	fi
 }
 
-#安装BBRplus内核
+#Install BBRplus kernel
 installbbrplus(){
 	kernel_version="4.14.129-bbrplus"
 	if [[ "${release}" == "centos" ]]; then
@@ -70,16 +70,16 @@ installbbrplus(){
 	fi
 	detele_kernel
 	BBR_grub
-	echo -e "${Tip} 重启VPS后，请重新运行脚本开启${Red_font_prefix}BBRplus${Font_color_suffix}"
-	stty erase '^H' && read -p "需要重启VPS后，才能开启BBRplus，是否现在重启 ? [Y/n] :" yn
+	echo -e "${Tip} After restarting the VPS, please re-run the script to enable，${Red_font_prefix}BBRplus${Font_color_suffix}"
+	stty erase '^H' && read -p "BBRplus needs to be restarted after the VPS is restarted. Do you want to restart now? ? [Y/n] :" yn
 	[ -z "${yn}" ] && yn="y"
 	if [[ $yn == [Yy] ]]; then
-		echo -e "${Info} VPS 重启中..."
+		echo -e "${Info} VPS restarting..."
 		reboot
 	fi
 }
 
-#安装Lotserver内核
+#Install Lotserver kernel
 installlot(){
 	if [[ "${release}" == "centos" ]]; then
 		rpm --import http://${github}/lotserver/${release}/RPM-GPG-KEY-elrepo.org
@@ -105,7 +105,7 @@ installlot(){
 	fi
 }
 
-#启用BBR
+#enable BBR
 startbbr(){
 	remove_all
 	if [[ `echo ${kernel_version} | awk -F'.' '{print $1}'` -ge "5" ]]; then
@@ -116,19 +116,19 @@ startbbr(){
 		echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
 	fi
 	sysctl -p
-	echo -e "${Info}BBR启动成功！"
+	echo -e "${Info}BBR started successfully! "
 }
 
-#启用BBRplus
+#enable BBRplus
 startbbrplus(){
 	remove_all
 	echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
 	echo "net.ipv4.tcp_congestion_control=bbrplus" >> /etc/sysctl.conf
 	sysctl -p
-	echo -e "${Info}BBRplus启动成功！"
+	echo -e "${Info}BBRplus started successfully！"
 }
 
-#编译并启用BBR魔改
+#Compile and enable BBR magic change
 startbbrmod(){
 	remove_all
 	if [[ "${release}" == "centos" ]]; then
@@ -224,7 +224,7 @@ maxmode=\"1\"">>/appex/etc/config
 	start_menu
 }
 
-#卸载全部加速
+#Uninstall all acceleration
 remove_all(){
 	rm -rf bbrmod
 	sed -i '/net.core.default_qdisc/d' /etc/sysctl.conf
@@ -262,11 +262,11 @@ remove_all(){
 		bash <(wget --no-check-certificate -qO- https://github.com/MoeClub/lotServer/raw/master/Install.sh) uninstall
 	fi
 	clear
-	echo -e "${Info}:清除加速完成。"
+	echo -e "${Info}: Clear acceleration complete。"
 	sleep 1s
 }
 
-#优化系统配置
+#Optimize system configuration
 optimizing_system(){
 	sed -i '/fs.file-max/d' /etc/sysctl.conf
 	sed -i '/fs.inotify.max_user_instances/d' /etc/sysctl.conf
@@ -303,14 +303,14 @@ net.ipv4.ip_forward = 1">>/etc/sysctl.conf
 	echo "*               soft    nofile           1000000
 *               hard    nofile          1000000">/etc/security/limits.conf
 	echo "ulimit -SHn 1000000">>/etc/profile
-	read -p "需要重启VPS后，才能生效系统优化配置，是否现在重启 ? [Y/n] :" yn
+	read -p "The system optimization configuration can take effect only after restarting the VPS. Do you want to restart now? ? [Y/n] :" yn
 	[ -z "${yn}" ] && yn="y"
 	if [[ $yn == [Yy] ]]; then
 		echo -e "${Info} VPS 重启中..."
 		reboot
 	fi
 }
-#更新脚本
+#update script
 Update_Shell(){
 	echo -e "当前版本为 [ ${sh_ver} ]，开始检测最新版本..."
 	sh_new_ver=$(wget --no-check-certificate -qO- "http://${github}/tcp.sh"|grep 'sh_ver="'|awk -F "=" '{print $NF}'|sed 's/\"//g'|head -1)
@@ -326,43 +326,42 @@ Update_Shell(){
 			echo && echo "	已取消..." && echo
 		fi
 	else
-		echo -e "当前已是最新版本[ ${sh_new_ver} ] !"
+		echo -e "Currently the latest version [ ${sh_new_ver} ] !"
 		sleep 5s
 	fi
 }
 
-#开始菜单
+#Start Menu
 start_menu(){
 clear
-echo && echo -e " TCP加速 一键安装管理脚本 ${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
-  -- 就是爱生活 | 94ish.me --
+echo && echo -e " TCP acceleration one-click installation management script${Red_font_prefix}[v${sh_ver}]${Font_color_suffix}
   
- ${Green_font_prefix}0.${Font_color_suffix} 升级脚本
-————————————内核管理————————————
- ${Green_font_prefix}1.${Font_color_suffix} 安装 BBR/BBR魔改版内核
- ${Green_font_prefix}2.${Font_color_suffix} 安装 BBRplus版内核 
- ${Green_font_prefix}3.${Font_color_suffix} 安装 Lotserver(锐速)内核
-————————————加速管理————————————
- ${Green_font_prefix}4.${Font_color_suffix} 使用BBR加速
- ${Green_font_prefix}5.${Font_color_suffix} 使用BBR魔改版加速
- ${Green_font_prefix}6.${Font_color_suffix} 使用暴力BBR魔改版加速(不支持部分系统)
- ${Green_font_prefix}7.${Font_color_suffix} 使用BBRplus版加速
- ${Green_font_prefix}8.${Font_color_suffix} 使用Lotserver(锐速)加速
-————————————杂项管理————————————
- ${Green_font_prefix}9.${Font_color_suffix} 卸载全部加速
- ${Green_font_prefix}10.${Font_color_suffix} 系统配置优化
- ${Green_font_prefix}11.${Font_color_suffix} 退出脚本
+ ${Green_font_prefix}0.${Font_color_suffix} upgrade script
+————————————Kernel management————————————
+ ${Green_font_prefix}1.${Font_color_suffix} Install BBR/BBR magic modified kernel
+ ${Green_font_prefix}2.${Font_color_suffix} Install the BBRplus version of the kernel
+ ${Green_font_prefix}3.${Font_color_suffix} Install Lotserver (Sharp Speed) Kernel
+————————————Accelerate management————————————
+ ${Green_font_prefix}4.${Font_color_suffix} Accelerate with BBR
+ ${Green_font_prefix}5.${Font_color_suffix} Use the BBR magic revision to speed up
+ ${Green_font_prefix}6.${Font_color_suffix} Use violent BBR magic revision to accelerate (some systems are not supported)
+ ${Green_font_prefix}7.${Font_color_suffix} Accelerate with BBRplus version
+ ${Green_font_prefix}8.${Font_color_suffix} Use Lotserver (sharp speed) to accelerate
+————————————Miscellaneous management————————————
+ ${Green_font_prefix}9.${Font_color_suffix} uninstall all acceleration
+ ${Green_font_prefix}10.${Font_color_suffix} System configuration optimization
+ ${Green_font_prefix}11.${Font_color_suffix} exit script
 ————————————————————————————————" && echo
 
 	check_status
 	if [[ ${kernel_status} == "noinstall" ]]; then
-		echo -e " 当前状态: ${Green_font_prefix}未安装${Font_color_suffix} 加速内核 ${Red_font_prefix}请先安装内核${Font_color_suffix}"
+		echo -e "Current status: ${Green_font_prefix} does not install ${Font_color_suffix} accelerated kernel ${Red_font_prefix} please install kernel ${Font_color_suffix}"
 	else
-		echo -e " 当前状态: ${Green_font_prefix}已安装${Font_color_suffix} ${_font_prefix}${kernel_status}${Font_color_suffix} 加速内核 , ${Green_font_prefix}${run_status}${Font_color_suffix}"
+		echo -e " current state: ${Green_font_prefix}Installed${Font_color_suffix} ${_font_prefix}${kernel_status}${Font_color_suffix} accelerated kernel , ${Green_font_prefix}${run_status}${Font_color_suffix}"
 		
 	fi
 echo
-read -p " 请输入数字 [0-11]:" num
+read -p " Please key in numbers [0-11]:" num
 case "$num" in
 	0)
 	Update_Shell
@@ -402,29 +401,29 @@ case "$num" in
 	;;
 	*)
 	clear
-	echo -e "${Error}:请输入正确数字 [0-11]"
+	echo -e "${Error}:Please enter the correct number [0-11]"
 	sleep 5s
 	start_menu
 	;;
 esac
 }
-#############内核管理组件#############
+#############Kernel Management Components#############
 
-#删除多余内核
+#remove redundant kernels
 detele_kernel(){
 	if [[ "${release}" == "centos" ]]; then
 		rpm_total=`rpm -qa | grep kernel | grep -v "${kernel_version}" | grep -v "noarch" | wc -l`
 		if [ "${rpm_total}" > "1" ]; then
-			echo -e "检测到 ${rpm_total} 个其余内核，开始卸载..."
+			echo -e "Detected ${rpm_total} remaining kernels, started uninstalling..."
 			for((integer = 1; integer <= ${rpm_total}; integer++)); do
 				rpm_del=`rpm -qa | grep kernel | grep -v "${kernel_version}" | grep -v "noarch" | head -${integer}`
-				echo -e "开始卸载 ${rpm_del} 内核..."
+				echo -e "Start uninstalling ${rpm_del} kernel..."
 				rpm --nodeps -e ${rpm_del}
-				echo -e "卸载 ${rpm_del} 内核卸载完成，继续..."
+				echo -e "Uninstall ${rpm_del} Kernel uninstall complete, continue..."
 			done
-			echo --nodeps -e "内核卸载完毕，继续..."
+			echo --nodeps -e "Kernel uninstallation is complete, continue..."
 		else
-			echo -e " 检测到 内核 数量不正确，请检查 !" && exit 1
+			echo -e " Incorrect number of cores detected, please check !" && exit 1
 		fi
 	elif [[ "${release}" == "debian" || "${release}" == "ubuntu" ]]; then
 		deb_total=`dpkg -l | grep linux-image | awk '{print $2}' | grep -v "${kernel_version}" | wc -l`
@@ -464,13 +463,13 @@ BBR_grub(){
     fi
 }
 
-#############内核管理组件#############
+#############Kernel Management Components#############
 
 
 
-#############系统检测组件#############
+#############System Check Components#############
 
-#检查系统
+#Check the system
 check_sys(){
 	if [[ -f /etc/redhat-release ]]; then
 		release="centos"
@@ -504,29 +503,29 @@ check_version(){
 	fi
 }
 
-#检查安装bbr的系统要求
+#Check the system requirements for installing bbr
 check_sys_bbr(){
 	check_version
 	if [[ "${release}" == "centos" ]]; then
 		if [[ ${version} -ge "6" ]]; then
 			installbbr
 		else
-			echo -e "${Error} BBR内核不支持当前系统 ${release} ${version} ${bit} !" && exit 1
+			echo -e "${Error} BBR kernel does not support current system ${release} ${version} ${bit} !" && exit 1
 		fi
 	elif [[ "${release}" == "debian" ]]; then
 		if [[ ${version} -ge "8" ]]; then
 			installbbr
 		else
-			echo -e "${Error} BBR内核不支持当前系统 ${release} ${version} ${bit} !" && exit 1
+			echo -e "${Error} BBR kernel does not support current system ${release} ${version} ${bit} !" && exit 1
 		fi
 	elif [[ "${release}" == "ubuntu" ]]; then
 		if [[ ${version} -ge "14" ]]; then
 			installbbr
 		else
-			echo -e "${Error} BBR内核不支持当前系统 ${release} ${version} ${bit} !" && exit 1
+			echo -e "${Error} BBR kernel does not support current system ${release} ${version} ${bit} !" && exit 1
 		fi
 	else
-		echo -e "${Error} BBR内核不支持当前系统 ${release} ${version} ${bit} !" && exit 1
+		echo -e "${Error} BBR kernel does not support current system ${release} ${version} ${bit} !" && exit 1
 	fi
 }
 
@@ -536,22 +535,22 @@ check_sys_bbrplus(){
 		if [[ ${version} -ge "6" ]]; then
 			installbbrplus
 		else
-			echo -e "${Error} BBRplus内核不支持当前系统 ${release} ${version} ${bit} !" && exit 1
+			echo -e "${Error} BBRplus kernel does not support current system ${release} ${version} ${bit} !" && exit 1
 		fi
 	elif [[ "${release}" == "debian" ]]; then
 		if [[ ${version} -ge "8" ]]; then
 			installbbrplus
 		else
-			echo -e "${Error} BBRplus内核不支持当前系统 ${release} ${version} ${bit} !" && exit 1
+			echo -e "${Error} BBRplus kernel does not support current system ${release} ${version} ${bit} !" && exit 1
 		fi
 	elif [[ "${release}" == "ubuntu" ]]; then
 		if [[ ${version} -ge "14" ]]; then
 			installbbrplus
 		else
-			echo -e "${Error} BBRplus内核不支持当前系统 ${release} ${version} ${bit} !" && exit 1
+			echo -e "${Error} BBRplus kernel does not support current system ${release} ${version} ${bit} !" && exit 1
 		fi
 	else
-		echo -e "${Error} BBRplus内核不支持当前系统 ${release} ${version} ${bit} !" && exit 1
+		echo -e "${Error} BBRplus kernel does not support current system ${release} ${version} ${bit} !" && exit 1
 	fi
 }
 
@@ -640,38 +639,38 @@ check_status(){
 		elif [[ ${run_status} == "tsunami" ]]; then
 			run_status=`lsmod | grep "tsunami" | awk '{print $1}'`
 			if [[ ${run_status} == "tcp_tsunami" ]]; then
-				run_status="BBR魔改版启动成功"
+				run_status="BBR magic revision started successfully"
 			else 
-				run_status="BBR魔改版启动失败"
+				run_status="BBR magic revision failed to start"
 			fi
 		elif [[ ${run_status} == "nanqinlang" ]]; then
 			run_status=`lsmod | grep "nanqinlang" | awk '{print $1}'`
 			if [[ ${run_status} == "tcp_nanqinlang" ]]; then
-				run_status="暴力BBR魔改版启动成功"
+				run_status="The violent BBR magic revision has been successfully launched"
 			else 
-				run_status="暴力BBR魔改版启动失败"
+				run_status="The violent BBR magic revision failed to start"
 			fi
 		else 
-			run_status="未安装加速模块"
+			run_status="Acceleration module not installed"
 		fi
 	elif [[ ${kernel_status} == "BBRplus" ]]; then
 		run_status=`grep "net.ipv4.tcp_congestion_control" /etc/sysctl.conf | awk -F "=" '{gsub("^[ \t]+|[ \t]+$", "", $2);print $2}'`
 		if [[ ${run_status} == "bbrplus" ]]; then
 			run_status=`lsmod | grep "bbrplus" | awk '{print $1}'`
 			if [[ ${run_status} == "tcp_bbrplus" ]]; then
-				run_status="BBRplus启动成功"
+				run_status="BBRplus started successfully"
 			else 
-				run_status="BBRplus启动失败"
+				run_status="BBRplus failed to start"
 			fi
 		else 
-			run_status="未安装加速模块"
+			run_status="Acceleration module not installed"
 		fi
 	fi
 }
 
-#############系统检测组件#############
+#############System Check Components#############
 check_sys
 check_version
-[[ ${release} != "debian" ]] && [[ ${release} != "ubuntu" ]] && [[ ${release} != "centos" ]] && echo -e "${Error} 本脚本不支持当前系统 ${release} !" && exit 1
+[[ ${release} != "debian" ]] && [[ ${release} != "ubuntu" ]] && [[ ${release} != "centos" ]] && echo -e "${Error} This script does not support the current system ${release} !" && exit 1
 start_menu
 
